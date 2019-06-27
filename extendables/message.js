@@ -1,6 +1,6 @@
 // Copyright (c) 2017-2019 dirigeants. All rights reserved. MIT license.
 const { Extendable } = require('klasa');
-const { Message } = require('discord.js');
+const { Message, APIMessage } = require('discord.js');
 
 module.exports = class extends Extendable {
 
@@ -25,6 +25,11 @@ module.exports = class extends Extendable {
 	async unreact(emojiID) {
 		const reaction = this.reactions.get(emojiID);
 		return reaction ? reaction.users.remove(this.client.user) : null;
+	}
+	
+	replyLocale(key, localeArgs = [], options = {}) {
+		if (!Array.isArray(localeArgs)) [options, localeArgs] = [localeArgs, []];
+		return this.sendMessage(APIMessage.transformOptions(this.language.get(key, ...localeArgs), options, { reply: this.member || this.author }));
 	}
 
 };
